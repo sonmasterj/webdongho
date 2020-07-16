@@ -24,9 +24,12 @@
       <div class="table" style="width: 440px">
         <vue-table-dynamic :params="params_mini"></vue-table-dynamic>
       </div>
-      <line-chart :chart-data='dataChart' :options="options" class='chart'>
-
-      </line-chart>
+      <div class="group-line">
+        <line-chart :chart-data='dataVolChart' :options="volOptions" class='chart' :width='600' :height='410'>
+        </line-chart>
+        <line-chart :chart-data='dataCurChart' :options="curOptions" class='chart' :width='600' :height='410'>
+        </line-chart>
+      </div>
     </div>
 
   </div>
@@ -41,11 +44,48 @@ export default {
   },
   data(){
     return{
-      dataChart : null,
-      options: {
+      //cac thuoc tinh dien ap
+      dataVolChart : null,
+      
+      volOptions: {
         title: {
           display: true,
           text: 'Đồ thị điện áp (V)'
+        },
+        // responsive: true,
+        // maintainAspectRatio: false,
+        // bezierCurve: false,
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Voltage'
+						}
+					}]
+				}
+      },
+      //thuoc tinh dong dien
+      dataCurChart : null,
+      curOptions: {
+        title: {
+          display: true,
+          text: 'Đồ thị dòng điện (A)'
         },
         responsive: true,
         // maintainAspectRatio: false,
@@ -70,7 +110,7 @@ export default {
 						display: true,
 						scaleLabel: {
 							display: true,
-							labelString: 'Voltage'
+							labelString: 'Current'
 						}
 					}]
 				}
@@ -139,17 +179,24 @@ export default {
       json:[
         
       ],
+
+      //du lieu thoi gian va dien ap
       times:[],
       V1N:[],
       V2N:[],
       V3N:[],
-      Vlavg:[]
-      
+      Vlavg:[],
+      //du lieu dong dien
+      I1:[],
+      I2:[],
+      I3:[],
+      Iavg:[]
     }
   },
   methods:{
     fillData(){
-      this.dataChart={
+      //dien ap
+      this.dataVolChart={
         labels:this.times,
         datasets:[
           {
@@ -185,6 +232,45 @@ export default {
             data: this.Vlavg
           },
         ]
+      };
+
+      //dong dien
+      this.dataCurChart={
+        labels:this.times,
+        datasets:[
+          {
+            label: "I1",
+            fill:false,
+            lineTension:0,
+            backgroundColor: '#f55442',
+            borderColor: '#f55442',
+            data: this.I1
+          },
+          {
+            label: "I2",
+            fill:false,
+            lineTension:0,
+            backgroundColor: '#f5e642',
+            borderColor:'#f5e642',
+            data: this.I2
+          },
+          {
+            label: "I3",
+            fill:false,
+            lineTension:0,
+            backgroundColor: '#42f54e',
+            borderColor:'#42f54e',
+            data: this.I3
+          },
+          {
+            label: "Iavg",
+            fill:false,
+            lineTension:0,
+            backgroundColor: '#f542ec',
+            borderColor:'#f542ec',
+            data: this.Iavg
+          },
+        ]
       }
     }
   },
@@ -213,6 +299,11 @@ export default {
         this.V2N.splice(0,1);
         this.V3N.splice(0,1);
         this.Vlavg.splice(0,1);
+
+        this.I1.splice(0,1);
+        this.I2.splice(0,1);
+        this.I3.splice(0,1);
+        this.Iavg.splice(0,1);
       }
 
       //cap nhap mang du lieu cho table va exel
@@ -261,6 +352,12 @@ export default {
       this.V2N.push(V2N);
       this.V3N.push(V3N);
       this.Vlavg.push(Vlavg);
+
+      this.I1.push(I1);
+      this.I2.push(I1);
+      this.I3.push(I1);
+      this.Iavg.push(I1);
+
       this.fillData();
 
       // console.log(this.params.data)
@@ -328,6 +425,12 @@ export default {
           this.V2N.push(V2N);
           this.V3N.push(V3N);
           this.Vlavg.push(Vlavg);
+
+          this.I1.push(I1);
+          this.I2.push(I1);
+          this.I3.push(I1);
+          this.Iavg.push(I1);
+
           this.fillData();
         }
       }
@@ -352,6 +455,11 @@ export default {
     justify-content: center;
   }
   .chart{
-    width: 820px;
+    /* width: 410px; */
+    /* height: 500px; */
+  }
+  .group-line{
+    display: flex;
+    flex-direction: column;
   }
 </style>
